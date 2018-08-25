@@ -22,9 +22,9 @@
 			var camera, scene, renderer, dirLight, hemiLight;
 			var controls;
 			//var position = {x:100, y:0};
-			var position = { x: 100, y: 0 }
+			var position111 = { x: 100, y: 0 }
 			//var tween = new TWEEN.tween(position);
-			var tween = new TWEEN.Tween(position);
+			//var tween111 = new TWEEN.Tween(position);
 			
 			init();
 			animate();
@@ -42,8 +42,8 @@
 				document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 
 				//TWEEN VARIABLES
-				var position = {x:100, y:0};
-				var tween = new TWEEN.tween(position);
+				//var position = {x:100, y:0};
+				//var tween = new TWEEN.tween(position);
 				
 
 				// RENDERER
@@ -127,7 +127,8 @@
 				requestAnimationFrame( animate );
 				render();				
 			}
-			function render() {								
+			function render() {	
+				TWEEN.update();							
 				renderer.render( scene, camera );
 			}
 
