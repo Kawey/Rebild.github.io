@@ -15,11 +15,16 @@
 		<script src="js/OrbitControls.js"></script>
 		<script src="js/Detector.js"></script>
 		<script src="js/tween.min.js"></script>
+		<script src="js/tween.js"></script>
 
 		<script>
 
 			var camera, scene, renderer, dirLight, hemiLight;
 			var controls;
+			//var position = {x:100, y:0};
+			var position = { x: 100, y: 0 }
+			//var tween = new TWEEN.tween(position);
+			var tween = new TWEEN.Tween(position);
 			
 			init();
 			animate();
