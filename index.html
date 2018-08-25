@@ -35,6 +35,10 @@
 
 				//EVENT LISENERS
 				document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+
+				//TWEEN VARIABLES
+				var position = {x:100, y:0};
+				var tween = new TWEEN.tween(position);
 				
 
 				// RENDERER
@@ -101,6 +105,11 @@
 
 			function onDocumentMouseDown( event ) {
 				console.log("mouse click")
+			}
+
+			function tweenControl() {
+				console.log("tween control")
+				tween.start();
 			}
 			
 			function onWindowResize() {
