@@ -15,35 +15,42 @@
 		<script src="js/OrbitControls.js"></script>
 		<script src="js/Detector.js"></script>
 		<script src="js/tween.min.js"></script>
+		<script src="js/Tween.js"></script>
 		
 
 		<script>
 
 			var camera, scene, renderer, dirLight, hemiLight;
 			var controls;
-			//var position = {x:100, y:0};
-			var position111 = { x: 100, y: 0 }
-			//var tween = new TWEEN.tween(position);
-			//var tween111 = new TWEEN.Tween(position);
+
+			var tween, tweenCam;
+			var position = {x:30, y:20};
+			var positionCam = {x: -1000, y: 2000,z:-3000};
+			var vector = new THREE.Vector3(10,-1000,-30);
+			var camTarget = new THREE.Vector3(0,0,-1);
+			var box;
 			
+			var secondClick = false;		
 			init();
 			animate();
 
 			function init() {
+
 				var container = document.getElementById( 'container' );
 
 				camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 5000 );
-				camera.position.set( 0, 0, 250 );
+				camera.position.set( 0, 50, 250 );
+				//camera.lookAt(vector);
+				
+				console.log(camera.getWorldDirection(camTarget));
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color().setHSL( 0.6, 0, 1 );
 				scene.fog = new THREE.Fog( scene.background, 1, 5000 );	
-
+				camera.lookAt(vector);
 				//EVENT LISENERS
 				document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 
-				//TWEEN VARIABLES
-				//var position = {x:100, y:0};
-				//var tween = new TWEEN.tween(position);
+				
 				
 
 				// RENDERER
@@ -94,27 +101,61 @@
 				groundMat.color.setHSL( 0.095, 1, 0.75 );
 				var ground = new THREE.Mesh( groundGeo, groundMat );
 				ground.rotation.x = -Math.PI/2;
-				ground.position.y = -33;
+				ground.position.y = 0;
 				scene.add( ground );
 				ground.receiveShadow = true;
 
 				// MODEL
 				var boxGeo = new THREE.BoxGeometry(10,5,10);
 				var boxMat = new THREE.MeshPhongMaterial({color:0x00ff00});
-				var box = new THREE.Mesh(boxGeo, boxMat);
+				box = new THREE.Mesh(boxGeo, boxMat);
+				
 				scene.add(box);
+				box.position.set(0,2.5,0);
+				console.log(box.position);
 				box.receiveShadow = true;
 				box.castShadow = true;
+
+				//TWEEN VARIABLES
+				//var position = {x:100, y:0};
+				//tween = new TWEEN.Tween(box.position);
 				
 			}
 
 			function onDocumentMouseDown( event ) {
-				console.log("mouse click")
+				
+				tweenControl();
 			}
 
 			function tweenControl() {
-				console.log("tween control")
-				tween.start();
+				
+				if(secondClick){
+					TWEEN.removeAll()
+					//camera.lookAt(box.position);
+					console.log("box")
+					secondClick = false;
+				}
+				else{
+					secondClick =true;
+					//camera.lookAt(vector)
+				tween = new TWEEN.Tween(box.position)
+					.to(position, 3000)
+
+					.start();
+					tween.onUpdate(function(object) {
+					
+					var q = new THREE.Vector3(object.x,object.y,object.z);
+					console.log(q);
+					//camera.lookAt(q);
+				});
+					console.log("vector")
+				// tweenCam = new TWEEN.Tween(camera.lookAt(0,0,0))
+				// 	.to(box.position, 5000)
+				// 	.start();
+				}
+				
+				
+				//tween.start();
 			}
 			
 			function onWindowResize() {
@@ -125,10 +166,11 @@
 
 			function animate() {
 				requestAnimationFrame( animate );
+				TWEEN.update();
+				
 				render();				
 			}
-			function render() {	
-				TWEEN.update();							
+			function render() {								
 				renderer.render( scene, camera );
 			}
 
