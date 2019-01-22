@@ -23,11 +23,12 @@
 			var camera, scene, renderer, dirLight, hemiLight;
 			var controls;
 
-			var tween, tweenCam;
+			var tween, tweenCam, tweenCamTarg;
 			var position = {x:30, y:20};
-			var positionCam = {x: -1000, y: 2000,z:-3000};
+			var positionCam = {x: 0, y: 50,z: 250};
+			var vecCamPos = new THREE.Vector3(0,50,250);
 			var vector = new THREE.Vector3(10,-1000,-30);
-			var camTarget = new THREE.Vector3(0,0,-1);
+			//var camTarget = new THREE.Vector3(0,0,-1);//????
 			var box;
 			
 			var secondClick = false;		
@@ -38,18 +39,22 @@
 
 				var container = document.getElementById( 'container' );
 
-				camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 5000 );
-				camera.position.set( 0, 50, 250 );
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 5000 );
+				//camera.position.set( 0, 50, 250 );
+				//	camera.position = positionCam;
+				camera.position.copy(vecCamPos);
+				console.log(camera.position)
+				camera.target = new THREE.Vector3( 0, 0, 0 );
 				//camera.lookAt(vector);
 				
-				console.log(camera.getWorldDirection(camTarget));
+				//console.log(camera.getWorldDirection(camTarget)); //???
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color().setHSL( 0.6, 0, 1 );
 				scene.fog = new THREE.Fog( scene.background, 1, 5000 );	
 				camera.lookAt(vector);
 				//EVENT LISENERS
 				document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-
+				document.addEventListener("keydown", onDocumentKeyDown, false);
 				
 				
 
@@ -127,6 +132,42 @@
 				tweenControl();
 			}
 
+			function onDocumentKeyDown(event) {
+				var keyCode = event.which;
+				console.log("Some key pressed!!")
+				//TWEEN CAMERA
+				tweenCam = new TWEEN.Tween(camera.position)
+					.to( {
+						x: 0,
+						y: 50,
+						z: 250
+
+					})
+					.easing(TWEEN.Easing.Linear.None ).onUpdate( function () {
+						camera.lookAt( camera.target);
+					})
+					.onComplete( function() {
+						camera.lookAt( box.position);
+					})
+					.start();
+
+					var tweenCamTarg = new TWEEN.Tween( camera.target )
+					.to( {
+							x: box.position.x,
+							y: box.position.y,
+							z: 0
+					} )
+					.easing( TWEEN.Easing.Linear.None )
+					.onUpdate( function () {
+
+					} )
+					.onComplete( function () {
+
+							camera.lookAt( box.position );
+
+					} )
+					.start();
+			}
 			function tweenControl() {
 				
 				if(secondClick){
@@ -145,7 +186,10 @@
 					tween.onUpdate(function(object) {
 					
 					var q = new THREE.Vector3(object.x,object.y,object.z);
-					console.log(q);
+					//console.log(q);
+
+					
+
 					//camera.lookAt(q);
 				});
 					console.log("vector")
